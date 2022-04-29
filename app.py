@@ -7,10 +7,22 @@ from plotly.subplots import make_subplots
 from matplotlib.colors import ListedColormap
 from pathlib import Path
 
+
+# blue to use
+blue = "#4a6ec3"
+blue_light_rgb = "rgba(64, 111, 195, 0.9)"
+blue_rgb = "rgba(64, 111, 195, 1)"
+
+red = "#d7373f"
+red_light_rgb = "rgba(215, 55, 63, 0.9)"
+red_rgb = "rgba(215, 55, 63, 1)"
+
+transparent_color = "rgba(0,0,0,0)"
+
 # user defined functions
 # create prediction donut chart
 def pie_chart_prediction(df) -> px.pie:
-    colors = ["rgba(235, 60, 12, 0.60)", "rgba(105, 43, 255, 0.60)"]
+    colors = [red_light_rgb, blue_light_rgb]
 
     fig = go.Figure(
         data=[
@@ -38,11 +50,11 @@ def pie_chart_prediction(df) -> px.pie:
         annotations=[
             dict(
                 text=f"{predicted_winner}<br>{predicted_winner_odds:.2%}",
-                font_size=36,
+                font_size=30,
                 showarrow=False,
             )
         ],
-        margin=dict(l=0, r=0, b=0, t=0),
+        margin=dict(l=0, r=20, b=20, t=0),
     )
     return fig
 
@@ -51,10 +63,10 @@ def pie_chart_prediction(df) -> px.pie:
 def stats_table(red_stats, blue_stats) -> go.Figure:
     layout = go.Layout(
         margin=go.layout.Margin(
-            l=0,  # left margin
-            r=0,  # right margin
+            l=150,  # left margin
+            r=150,  # right margin
             b=0,  # bottom margin
-            t=0,  # top margin
+            t=100,  # top margin
         )
     )
     stats = ["Win - Loss - Draws", "Age", "Height", "Weight", "Reach", "Stance", "Born"]
@@ -67,10 +79,10 @@ def stats_table(red_stats, blue_stats) -> go.Figure:
             go.Table(
                 header=dict(
                     values=header_values,
-                    line_color="#E1ECF0",
-                    fill_color="#e0e0ef",
+                    line_color=transparent_color,
+                    fill_color=transparent_color,
                     font=dict(
-                        color=["#AC302C", "#5B5B5B", "#315D9E"],
+                        color=[red_light_rgb, "#5B5B5B", blue_light_rgb],
                         family="Source Sans Pro",
                         size=36,
                     ),
@@ -80,7 +92,7 @@ def stats_table(red_stats, blue_stats) -> go.Figure:
                 cells=dict(
                     values=cells_values,
                     line_color="#e0e0ef",
-                    fill_color="#f0f0f5",
+                    fill_color=transparent_color,
                     # f0f0f5
                     align=["right", "center", "left"],
                     height=30,
@@ -128,8 +140,8 @@ def two_sided_barchart(red_offensive_stats, blue_offensive_stats) -> go.Figure:
             textposition="inside",
             hovertemplate="%{y}: %{x}%",
             marker=dict(
-                color="rgba(235, 60, 12, 0.60)",
-                line=dict(color="rgba(235, 60, 12, 1.0)", width=1),
+                color=red_light_rgb,
+                line=dict(color=red_rgb, width=1),
             ),
         ),
         row=1,
@@ -147,8 +159,8 @@ def two_sided_barchart(red_offensive_stats, blue_offensive_stats) -> go.Figure:
             textposition="inside",
             hovertemplate="%{y}: %{x}%",
             marker=dict(
-                color="rgba(105, 43, 255, 0.60)",
-                line=dict(color="rgba(105, 43, 255, 1.0)", width=1),
+                color=blue_light_rgb,
+                line=dict(color=blue_rgb, width=1),
             ),
         ),
         row=1,
@@ -164,9 +176,9 @@ def two_sided_barchart(red_offensive_stats, blue_offensive_stats) -> go.Figure:
         # width=550,
         # height=500,
         # autosize=True,
-        margin=dict(l=0, r=0, b=0, t=0, pad=4),
-        xaxis_showticklabels=True,
-        xaxis2_showticklabels=True,
+        margin=dict(l=5, r=0, b=20, t=0, pad=5),
+        xaxis_showticklabels=False,
+        xaxis2_showticklabels=False,
         xaxis_title=red_name,
         xaxis2_title=blue_name,
         yaxis3_showticklabels=False,
@@ -182,20 +194,45 @@ def two_sided_barchart(red_offensive_stats, blue_offensive_stats) -> go.Figure:
     fig.update_xaxes(range=[max_val, 0], row=1, col=1)
     fig.update_xaxes(range=[0, max_val], row=1, col=2)
 
+    fig.update_xaxes(showgrid=False, fixedrange=True, zeroline=False)
+    fig.update_yaxes(showgrid=False, fixedrange=True)
+
     return fig
 
 
 def prediction_table(styler):
 
-    cmp_white_red = ListedColormap(["#fbfcea", "#d7e7d0", "#AC302C", "#5E120F"])
-    cmp_white_blue = ListedColormap(["#fbfcea", "#d7e7d0", "#1B6BAB", "#143D5E"])
+    cmp_seq_red = ListedColormap(
+        [
+            "#faf0ff",
+            "#dfbed0",
+            "#e5a7b8",
+            "#e89b9d",
+            "#e98a7f",
+            "#9e2944",
+            "#731331",
+            "#4a001e",
+        ]
+    )
+    cmp_seq_blue = ListedColormap(
+        [
+            "#faf0ff",
+            "#c6d0f2",
+            "#92b2de",
+            "#5d94cb",
+            "#2f74b3",
+            "#265191",
+            "#163670",
+            "#0b194c",
+        ]
+    )
 
     # Hide index
     # styler.hide(axis="index")
 
     # Sticky Header
     # https://pandas.pydata.org/docs/user_guide/style.html#Sticky-Headers
-    styler.set_sticky(axis=1)
+    # styler.set_sticky(axis=1)
 
     # Format as percentages
     # https://pandas.pydata.org/docs/user_guide/style.html#Formatting-Values
@@ -215,7 +252,7 @@ def prediction_table(styler):
         align=0,
         vmin=0,
         vmax=1,
-        cmap=cmp_white_red,
+        cmap=cmp_seq_red,
         height=50,
         width=60,
         # props="width: 120px; border-right: 1px solid black;",
@@ -225,7 +262,7 @@ def prediction_table(styler):
         align=0,
         vmin=0,
         vmax=1,
-        cmap=cmp_white_blue,
+        cmap=cmp_seq_blue,
         height=50,
         width=60,
         # props="width: 120px; border-right: 1px solid black;",
@@ -394,16 +431,50 @@ with placeholder.container():
     st.plotly_chart(table_chart, use_container_width=True, config=config)
 
     st.markdown("### Detailed Data View")
+    # TODO: styler.hide does not seem to work with Streamlit..? So I will manually specific which columns I want.
     st.dataframe(
         df[
             [
-                "event",
-                "matchup",
                 "red_name",
                 "blue_name",
                 "red_predicted_probability",
                 "blue_predicted_probability",
-                "prediction",
+                "red_wld",
+                "blue_wld",
+                "red_age",
+                "blue_age",
+                "red_weight",
+                "blue_weight",
+                "red_height",
+                "blue_height",
+                "red_reach",
+                "blue_reach",
+                "red_stance",
+                "blue_stance",
+                "red_born",
+                "blue_born",
+                "red_striking_percentage",
+                "blue_striking_percentage",
+                "red_takedowns_percentage",
+                "blue_takedowns_percentage",
+                "red_submissions_percentage",
+                "blue_submissions_percentage",
+                "red_SLpM",
+                "blue_SLpM",
+                "red_striking_accuracy",
+                "blue_striking_accuracy",
+                "red_SApM",
+                "blue_SApM",
+                "red_striking_defense",
+                "blue_striking_defense",
+                "red_takedowns_average_per_15",
+                "blue_takedowns_average_per_15",
+                "red_takedown_accuracy",
+                "blue_takedown_accuracy",
+                "red_takedown_defense",
+                "blue_takedown_defense",
+                "red_sub_attempts_average_per_15",
+                "blue_sub_attempts_average_per_15",
             ]
         ].style.pipe(prediction_table)
     )
