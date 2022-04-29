@@ -23,7 +23,12 @@ def pie_chart_prediction(df) -> px.pie:
         hovertemplate="%{label}: %{percent}",
         textinfo="percent",
         textfont_size=20,
-        showlegend=False,           
+        showlegend=False,
+        title=f"<b>Name Here</b><br>50%",  # TODO: use predicted winner and %
+    )
+    fig.update_layout(
+        font_color="red", # TODO: change color depending on winner
+        font_size=25,
     )
 
     fig.update_layout(margin=dict(l=0, r=0, t=0, b=0))
@@ -240,8 +245,10 @@ def prediction_table(styler):
 
 # read csv from github repo/local directory
 @st.experimental_memo
-def get_data() -> pd.DataFrame: 
-    return pd.read_csv(Path.joinpath(Path.cwd(), "Predictions", "LogisticRegression.csv"), index_col=0)
+def get_data() -> pd.DataFrame:
+    return pd.read_csv(
+        Path.joinpath(Path.cwd(), "Predictions", "LogisticRegression.csv"), index_col=0
+    )
 
 
 st.set_page_config(
@@ -352,7 +359,7 @@ with placeholder.container():
         fig = pie_chart_prediction(
             df_match[["red_predicted_probability", "blue_predicted_probability"]]
         )
-        st.plotly_chart(fig, use_container_width=True, config=config)       
+        st.plotly_chart(fig, use_container_width=True, config=config)
 
     with fig_col2:
         st.markdown("### Offensive Breakdown")
