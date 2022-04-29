@@ -272,6 +272,11 @@ st.set_page_config(
 
 df = get_data()
 
+# TODO: Remove extra spaces in pre-processing of dataframe. This should not be done in the app.
+df["red_born"] = df["red_born"].str.strip()
+df["blue_born"] = df["blue_born"].str.strip()
+
+
 # dashboard title
 st.title("UFC Prediction Dashboard")
 
