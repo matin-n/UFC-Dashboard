@@ -5,7 +5,7 @@ import streamlit as st  # 🎈 data web app development
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from matplotlib.colors import ListedColormap
-
+from pathlib import Path
 
 # user defined functions
 # create prediction pie chart
@@ -238,10 +238,10 @@ def prediction_table(styler):
     return styler
 
 
-# # read csv from github repo/local directory
+# read csv from github repo/local directory
 @st.experimental_memo
-def get_data() -> pd.DataFrame:
-    return pd.read_csv("Predictions\\LogisticRegression.csv", index_col=0)
+def get_data() -> pd.DataFrame: 
+    return pd.read_csv(Path.joinpath(Path.cwd(), "Predictions", "LogisticRegression.csv"), index_col=0)
 
 
 st.set_page_config(
