@@ -8,31 +8,42 @@ from matplotlib.colors import ListedColormap
 from pathlib import Path
 
 # user defined functions
-# create prediction pie chart
+# create prediction donut chart
 def pie_chart_prediction(df) -> px.pie:
     colors = ["rgba(235, 60, 12, 0.60)", "rgba(105, 43, 255, 0.60)"]
-    fig = px.pie(
-        df,
-        values=df.iloc[0].values,
-        names=[f"{red_name}", f"{blue_name}"],
-        color_discrete_sequence=colors,
-        hole=0.75,
+
+    fig = go.Figure(
+        data=[
+            go.Pie(
+                labels=[
+                    f"{red_name}",
+                    f"{blue_name}",
+                ],
+                values=df.iloc[0].values,
+                hole=0.75,
+            )
+        ],
     )
 
     fig.update_traces(
-        hovertemplate="%{label}: %{percent}",
-        textinfo="percent",
+        hoverinfo="label+percent", 
+        # textinfo="label+percent",
         textfont_size=20,
-        showlegend=False,
-        title=f"<b>Name Here</b><br>50%",  # TODO: use predicted winner and %
+        marker=dict(colors=colors),  # line=dict(color="#000000", width=1)
     )
+
     fig.update_layout(
-        font_color="red", # TODO: change color depending on winner
-        font_size=25,
+        showlegend=False,
+        # Add annotations in the center of the donut pies.
+        annotations=[
+            dict(
+                text=f"{predicted_winner}<br>{predicted_winner_odds:.2%}",
+                font_size=36,
+                showarrow=False,
+            )
+        ],
+        margin=dict(l=0, r=0, b=0, t=0),
     )
-
-    fig.update_layout(margin=dict(l=0, r=0, t=0, b=0))
-
     return fig
 
 
@@ -146,6 +157,7 @@ def two_sided_barchart(red_offensive_stats, blue_offensive_stats) -> go.Figure:
     )
 
     fig.update_layout(
+        autosize=True,
         showlegend=False,
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
@@ -283,6 +295,11 @@ blue_name = df_match["blue_name"].item()
 # grab predictions
 red_pred = df_match["red_predicted_probability"].item()
 blue_pred = df_match["blue_predicted_probability"].item()
+
+if red_pred > blue_pred:
+    predicted_winner, predicted_winner_odds = red_name, red_pred
+else:
+    predicted_winner, predicted_winner_odds = blue_name, blue_pred
 
 # stats for table chart
 red_stats = (
