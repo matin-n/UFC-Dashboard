@@ -63,10 +63,10 @@ def pie_chart_prediction(df) -> px.pie:
 def stats_table(red_stats, blue_stats) -> go.Figure:
     layout = go.Layout(
         margin=go.layout.Margin(
-            l=150,  # left margin
-            r=150,  # right margin
+            l=10,  # left margin
+            r=10,  # right margin
             b=0,  # bottom margin
-            t=100,  # top margin
+            t=10,  # top margin
         )
     )
     stats = ["Win - Loss - Draws", "Age", "Height", "Weight", "Reach", "Stance", "Born"]
@@ -108,6 +108,8 @@ def stats_table(red_stats, blue_stats) -> go.Figure:
         layout=layout,
     )
 
+    fig.update_layout(autosize=True)
+    # height=400,
     # fig.update_layout(overwrite=False, autosize=True,
     #     font=dict(family="Source Sans Pro", color="#000000")
     # )  # height=400,
