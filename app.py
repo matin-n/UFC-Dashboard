@@ -26,7 +26,7 @@ def pie_chart_prediction(df) -> px.pie:
     )
 
     fig.update_traces(
-        hoverinfo="label+percent", 
+        hoverinfo="label+percent",
         # textinfo="label+percent",
         textfont_size=20,
         marker=dict(colors=colors),  # line=dict(color="#000000", width=1)
@@ -275,18 +275,19 @@ df = get_data()
 # dashboard title
 st.title("UFC Prediction Dashboard")
 
-# top-level filters
-event_filter = st.selectbox("Select the Event", pd.unique(df["event"]))
-# dataframe filter
-df = df[df["event"] == event_filter]
 
-# second-level filter
-match_filter = st.selectbox("Select the Match", pd.unique(df["matchup"]))
-df_match = df[df["matchup"] == match_filter]
+with st.sidebar:
+    # top-level filters
+    event_filter = st.selectbox("Select the Event", pd.unique(df["event"]))
+    # dataframe filter
+    df = df[df["event"] == event_filter]
+
+    # second-level filter
+    match_filter = st.selectbox("Select the Match", pd.unique(df["matchup"]))
+    df_match = df[df["matchup"] == match_filter]
 
 # creating a single-element container
 placeholder = st.empty()
-
 
 # grab name
 red_name = df_match["red_name"].item()
@@ -366,7 +367,6 @@ config = {"displayModeBar": False}
 
 
 with placeholder.container():
-
     # Event name
     st.header(event_filter)
     # Create two columns for charts
